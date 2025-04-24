@@ -6,11 +6,10 @@ def isFullCaps(c):
         return True
 
     t = "".join(l for l in c.content if l.isalpha())
-    (cap, nocap) = (0,0)
+    cap = 0
 
     for k in t:
         if k>="A":
             cap+=1
-        else:
-            nocap+=1
-    return cap >= nocap
+    # consider FullCaps if more than 70% of the content is capitalize
+    return (cap/len(t)) > 0.7
