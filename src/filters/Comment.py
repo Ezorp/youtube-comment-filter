@@ -11,5 +11,5 @@ class Comment:
         self.flag = True
         return
 
-    def __bool__:
+    def __bool__(self):
         return self.flag

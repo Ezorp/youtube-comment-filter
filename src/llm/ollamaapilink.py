@@ -2,7 +2,7 @@ import requests
 import sys
 from pathlib import Path
 
-def query_ollama(prompt, model="youtube-moderator", host="127.0.0.1", port=11434):
+def query_ollama(prompt, model="llama3", host="127.0.0.1", port=11434):
     """
     Send a prompt to the Ollama API and return the response.
     

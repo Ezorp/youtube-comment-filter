@@ -7,12 +7,12 @@ def isBanned(username, cur):
                 )
     return cur.fetchone()[0] != 0
 
-def ban(username, cur):
+def ban(username, cur, db):
     if isBanned(username, cur):
         return False
     cur.execute("INSERT INTO users (name) VALUES (?)", 
-                (username))
-    cur.commit()
+                (username,))
+    db.commit()
     return True
 
 def getBanwords(cur):
@@ -32,16 +32,16 @@ if __name__ == "__main__":
     """)
 
     banworddb = sqlite3.connect(".cache/banwords.db")
-    cur2 = bandb.cursor()
+    cur2 = banworddb.cursor()
     
-    cur.execute("""
+    cur2.execute("""
     CREATE TABLE IF NOT EXISTS words (
         id INTEGER PRIMARY KEY,
         word TEXT NOT NULL
     )
     """)
 
-    cur.commit()
-    cur.close()
-    cur2.commit()
-    cur2.close()
+    bandb.commit()
+    bandb.close()
+    banworddb.commit()
+    banworddb.close()

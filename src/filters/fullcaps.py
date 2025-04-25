@@ -1,4 +1,4 @@
-from Comment import Comment
+from filters.Comment import Comment
 
 
 def isFullCaps(c):
@@ -9,7 +9,7 @@ def isFullCaps(c):
     cap = 0
 
     for k in t:
-        if k>="A":
+        if k<="Z":
             cap+=1
     # consider FullCaps if more than 70% of the content is capitalize
     return (cap/len(t)) > 0.7

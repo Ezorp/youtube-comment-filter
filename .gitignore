@@ -3,3 +3,8 @@ src/llm/training/modelm*
 src/llm/training/llama*
 src/llm/training/youtube*
 src/llm/training/unsloth*
+src/.cache/*
+scr/.venv
+.*
+output*
+__*

@@ -15,7 +15,7 @@ if torch.cuda.is_available():
 
 # The correct get_prompt function for spam detection
 def get_prompt(video, author, date, text, clas):
-    return (f"You are an AI agend made to identify comments made under a youtube video. Your task is to return \"Yes\" if you consider that the linked comment is spam and \"No\" otherwize.\nyour output must be strictly be \"Yes\" or \"No\".\n\nTo do so, you have acces to the author name, the date the comment was posted and the content of the message.\nIs considered as spam any filter evasion, hate speach, missinformation, advertisement to something, and so on.\n\nAuthor name: {author}\n\nComment date: {date}\n\nBEGIN COMMENT CONTENT\n{text}\nEND COMMENT CONTENT", "Yes" if clas == 1 else "No")
+    return (f"You are an AI agend made to identify comments made under a youtube video. Your task is to return \"Yes\" if you consider that the linked comment should be deleted and \"No\" otherwize.\nYour output must be strictly be \"Yes\" or \"No\".\n\nTo do so, you have acces to the author name, the date the comment was posted and the content of the message.\nShould be deleted any filter evasion, hate speach, advertisement to something, and so on.\nremember that a negative comment is not necessary spam and that trolling comments should not be consider as spam. \n\nAuthor name: {author}\n\nComment date: {date}\n\nBEGIN COMMENT CONTENT\n{text}\nEND COMENT CONTENT", "Yes" if clas == 1 else "No")
 
 # Load dataset from CSV and create instruction format
 def load_dataset(file_path="video_dataset.csv"):
@@ -53,7 +53,7 @@ def load_dataset(file_path="video_dataset.csv"):
 
 # Set up model parameters
 max_seq_length = 512  # Reduced for 4060 memory constraints
-lora_rank = 64 # Adjusted for performance/memory tradeoff
+lora_rank = 128 # Adjusted for performance/memory tradeoff
 model_name = "meta-llama/Llama-3.2-3B-Instruct"  # Changed to 3B instruct model
 
 # Load the model with 4-bit quantization optimized for your 4060
@@ -63,7 +63,7 @@ model, tokenizer = FastLanguageModel.from_pretrained(
     load_in_4bit=True,  # Use 4-bit quantization for your 4060
     fast_inference=False,  # Disable vLLM as it requires more memory
     max_lora_rank=lora_rank,
-    gpu_memory_utilization=0.65,  # Adjust based on your 4060's VRAM
+    gpu_memory_utilization=0.95,  # Adjust based on your 4060's VRAM
 )
 
 # Set up LoRA for efficient training
@@ -96,7 +96,7 @@ training_args = TrainingArguments(
     gradient_accumulation_steps=4,
     gradient_checkpointing=True,
     optim="paged_adamw_8bit",
-    learning_rate=2e-5,
+    learning_rate=6e-5,
     weight_decay=1.0,
     fp16=False,  # Disable mixed precision since we're using 4-bit
     bf16=False,
@@ -147,7 +147,7 @@ def detect_spam(video, author, date, comment_text):
         outputs = model.generate(
             **inputs,
             max_new_tokens=10,  # We only need a short response (Yes/No)
-            temperature=0.1,    # Lower temperature for more deterministic output
+            temperature=0.7,    # Lower temperature for more deterministic output
             top_p=0.95,
             do_sample=True,
         )

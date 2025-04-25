@@ -3,11 +3,11 @@ from filters.Comment import *
 from filters.database import *
 from filters.fullcaps import *
 from filters.regexfilter import *
-from training.trainingScript import *
+from llm.ollamaapilink import *
 import csv
 
 def promptbuilding(comment):
-    return f"You are an AI agend made to identify comments made under a youtube video. Your task is to return \"Yes\" if you consider that the linked comment is spam and \"No\" otherwize.\nyour output must be strictly be \"Yes\" or \"No\".\n\nTo do so, you have acces to the author name, the date the comment was posted and the content of the message.\nIs considered as spam any filter evasion, hate speach, missinformation, advertisement to something, and so on.\n\nAuthor name: {comment.author}\n\nComment date: {comment.date}\n\nBEGIN COMMENT CONTENT\n{comment.content}\nEND COMENT CONTENT"
+    return f"You are an AI agend made to identify comments made under a youtube video. Your task is to return \"Yes\" if you consider that the linked comment should be deleted and \"No\" otherwize.\nYour output must be strictly be \"Yes\" or \"No\".\n\nTo do so, you have acces to the author name, the date the comment was posted and the content of the message.\nShould be deleted any filter evasion, hate speach, advertisement to something, and so on.\nremember that a negative comment is not necessary spam and that trolling comments should not be consider as spam. \n\nAuthor name: {comment.author}\n\nComment date: {comment.date}\n\nBEGIN COMMENT CONTENT\n{comment.content}\nEND COMENT CONTENT"
 
 if __name__ == "__main__":
 
@@ -63,25 +63,27 @@ if __name__ == "__main__":
         if containLink(comment):
             comment.flag = True
             # automatic ban of the author of a spam comment.
-            ban(comment.author, cur)
+            ban(comment.author, cur, bandb)
 
         if (not comment) and isFullCaps(comment):
             comment.flag = True
             # automatic ban :gigachad:
-            ban(comment.author, cur)
+            ban(comment.author, cur, bandb)
 
         if (not comment) and isBanwordContained(comment.content, banwords):
             comment.flag = True
-            ban(comment.author, cur)
+            ban(comment.author, cur, bandb)
 
         if (not comment) and isBanned(comment.author, cur):
             comment.flag = True
         
         if not comment:
+            #print("AI")
             result = query_ollama(promptbuilding(comment))
-            if "yes" in result:
+            #print(comment.content + "\n" + result)
+            if "Yes" in result:
                 comment.flag = True
-                ban(comment.authoq)
+                ban(comment.author, cur, bandb)
 
     outputls = [["VIDEO","AUTHOR","DATE","TEXT","CLASS"]]
     while len(batch) > 0:
