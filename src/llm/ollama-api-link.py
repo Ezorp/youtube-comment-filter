@@ -4,7 +4,7 @@ from ../filters/Comment.py import Comment
 def promptbuilding(comment):
     return f"You are an AI agend made to identify comments made under a youtube video. Your task is to return \"Yes\" if you consider that the linked comment is spam and \"No\" otherwize.\nyour output must be strictly be \"Yes\" or \"No\".\n\nTo do so, you have acces to the author name, the date the comment was posted and the content of the message.\nIs considered as spam any filter evasion, hate speach, missinformation, advertisement to something, and so on.\n\nAuthor name: {comment.author}\n\nComment date: {comment.date}\n\nBEGIN COMMENT CONTENT\n{comment.content}\nEND COMENT CONTENT"
 
-def query_ollama(prompt, model="llama3", host="127.0.0.1", port=11434):
+def query_ollama(prompt, model="youtube-moderator", host="127.0.0.1", port=11434):
     """
     Send a prompt to the Ollama API and return the response.
     
