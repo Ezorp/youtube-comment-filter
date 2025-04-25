@@ -36,10 +36,10 @@ if __name__ == "__main__":
     #batch is a list of Comment s that are the one threated by the script.
     batch = []
     with open("batch.csv", newline='', encoding='utf-8') as f:
-        reader = csv.reader(f, delimiter=';')
+        reader = csv.reader(f, delimiter=',')
         next(reader)  # skip header
         for row in reader:
-            data.append(Comment(video=row[0], author=row[1], date=row[2], content=row[3]))
+            batch.append(Comment(video=row[0], author=row[1], date=row[2], content=row[3]))
 
     # banning user if posted more than 4 comments on a single video (anti spam)
     spamdict = {("example","default-name"):0}
@@ -80,11 +80,13 @@ if __name__ == "__main__":
                 comment.flag = True
                 ban(comment.authoq)
 
-
-
-
-
-
+    outputls = [["VIDEO","AUTHOR","DATE","TEXT","CLASS"]]
+    while len(batch) > 0:
+        c = batch.pop()
+        outputls.append([c.video, c.author, c.date, c.content, 1 if c else 0])
+    with open("output.csv", "w", newline="") as f:
+        writer = csv.writer(f, delimiter=',')
+        writer.writerows(outputls)
 
     bandb.commit()
     bandb.close()
