@@ -1,10 +1,13 @@
-from filters/banword.py import *
-from filters/Comment.py import *
-from filters/database.py import *
-from filters/full-caps.py import *
-from filters/regex-filter.py import *
-from training/trainingScript.py import *
+from filters.banword import *
+from filters.Comment import *
+from filters.database import *
+from filters.fullcaps import *
+from filters.regexfilter import *
+from training.trainingScript import *
 import csv
+
+def promptbuilding(comment):
+    return f"You are an AI agend made to identify comments made under a youtube video. Your task is to return \"Yes\" if you consider that the linked comment is spam and \"No\" otherwize.\nyour output must be strictly be \"Yes\" or \"No\".\n\nTo do so, you have acces to the author name, the date the comment was posted and the content of the message.\nIs considered as spam any filter evasion, hate speach, missinformation, advertisement to something, and so on.\n\nAuthor name: {comment.author}\n\nComment date: {comment.date}\n\nBEGIN COMMENT CONTENT\n{comment.content}\nEND COMENT CONTENT"
 
 if __name__ == "__main__":
 

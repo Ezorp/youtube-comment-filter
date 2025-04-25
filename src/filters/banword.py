@@ -1,5 +1,5 @@
 import sqlite3
-import database.py
+import database
 
 def isBanwordContained(comment, banwords):
     wordlist = comment.split(" ")

@@ -1,4 +1,4 @@
-from Comment.py import Comment
+from Comment import Comment
 import re
 
 def containLink(comment):
